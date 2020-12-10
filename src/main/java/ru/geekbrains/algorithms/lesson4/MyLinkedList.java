@@ -1,6 +1,7 @@
 package ru.geekbrains.algorithms.lesson4;
 
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 public class MyLinkedList<T> implements Iterable<T> {
@@ -14,9 +15,9 @@ public class MyLinkedList<T> implements Iterable<T> {
     }
 
 
-//    public ListIterator<T> listIterator() {
-//        return null;
-//    }
+    public ListIterator<T> listIterator() {
+        return new ListIter();
+    }
 
     public MyLinkedList() {
         first = null;
@@ -37,6 +38,79 @@ public class MyLinkedList<T> implements Iterable<T> {
             return current.getValue();
         }
 
+        @Override
+        public void remove() {
+             if(current.getPrev() == null){
+                 removeFirst();
+                 return;
+             }
+             if(!hasNext()){
+                 removeLast();
+                 return;
+             }
+
+             current.getPrev().setNext(current.getNext());
+             current.getNext().setPrev(current.getPrev());
+        }
+
+    }
+
+    private class ListIter implements ListIterator<T>{
+
+        Node beginCurrent = new Node(null,first);
+        Node prevCurrent = null;
+        int index = -1;
+
+        @Override
+        public boolean hasNext() {
+            return beginCurrent.getNext() != null;
+        }
+
+        @Override
+        public T next() {
+            prevCurrent = beginCurrent;
+            beginCurrent = beginCurrent.getNext();
+            index++;
+            return beginCurrent.getValue();
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return prevCurrent.getPrev() != null;
+        }
+
+        @Override
+        public T previous() {
+            beginCurrent = prevCurrent;
+            prevCurrent = prevCurrent.getPrev();
+            index--;
+            return prevCurrent.getValue();
+        }
+
+        @Override
+        public int nextIndex() {
+            return index + 1;
+        }
+
+        @Override
+        public int previousIndex() {
+            return 0;
+        }
+
+        @Override
+        public void remove() {
+          //Не сделал
+        }
+
+        @Override
+        public void set(T t) {
+              //Не сделал
+        }
+
+        @Override
+        public void add(T t) {
+            //Не сделал
+        }
     }
 
     private class Node {
